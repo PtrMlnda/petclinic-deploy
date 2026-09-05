@@ -1,0 +1,40 @@
+apiVersion: policies.kyverno.io/v1
+kind: ImageValidatingPolicy
+metadata:
+  name: verify-image
+spec:
+  matchConstraints:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: petclinic-dev
+    resourceRules:
+      - apiGroups:
+          - ""
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - pods
+          - pods/ephemeralcontainers
+  validationActions:
+    - Deny
+  matchImageReferences:
+    - glob: "*"
+  attestors:
+    - name: cosign
+      cosign:
+        key:
+          data: |
+            -----BEGIN PUBLIC KEY-----
+            MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEvF3IxE43viR9/XKtEJapXBW+3Kq5
+            PFktQr0wehMB/J/MRgXhSWC1aWWK+dpgtQXKIWkEOLoqjR85mGo/lk4HYA==
+            -----END PUBLIC KEY-----
+        ctlog:
+          insecureIgnoreTlog: true
+  validations:
+    - expression: images.containers.all(i, verifyImageSignatures(i, [attestors.cosign]) > 0) &&
+        images.initContainers.all(i, verifyImageSignatures(i, [attestors.cosign]) > 0) &&
+        images.ephemeralContainers.all(i, verifyImageSignatures(i, [attestors.cosign]) > 0)
+      message: Failed the image signature verifications
