@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: no-resources
+spec:
+  containers:
+    - name: app
+      image: nginx:1.27
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: no-cpu-request
+spec:
+  containers:
+    - name: app
+      image: nginx:1.27
+      resources:
+        requests:
+          memory: "128Mi"
+        limits:
+          memory: "256Mi"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: no-memory-request
+spec:
+  containers:
+    - name: app
+      image: nginx:1.27
+      resources:
+        requests:
+          cpu: "250m"
+        limits:
+          memory: "256Mi"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: no-memory-limit
+spec:
+  containers:
+    - name: app
+      image: nginx:1.27
+      resources:
+        requests:
+          cpu: "250m"
+          memory: "128Mi"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: no-memory-limit-init
+spec:
+  initContainers:
+    - name: init
+      image: busybox:1.37
+      resources:
+        requests:
+          cpu: "250m"
+          memory: "128Mi"
+  containers:
+    - name: app
+      image: nginx:1.27
+      resources:
+        requests:
+          cpu: "250m"
+          memory: "128Mi"
+        limits:
+          memory: "256Mi"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: compliant
+spec:
+  containers:
+    - name: app
+      image: nginx:1.27
+      resources:
+        requests:
+          cpu: "250m"
+          memory: "128Mi"
+        limits:
+          memory: "256Mi"
