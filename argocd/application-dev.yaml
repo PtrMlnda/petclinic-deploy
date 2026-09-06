@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/PtrMlnda/petclinic-deploy.git
     targetRevision: main
-    path: base
+    path: environments/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: petclinic-dev
