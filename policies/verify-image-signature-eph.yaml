@@ -1,8 +1,11 @@
 apiVersion: policies.kyverno.io/v1
 kind: ImageValidatingPolicy
 metadata:
-  name: verify-image-signature
+  name: verify-image-signature-eph
 spec:
+  evaluation:
+    background:
+      enabled: false
   matchConstraints:
     namespaceSelector:
       matchExpressions:
@@ -15,10 +18,9 @@ spec:
         apiVersions:
           - v1
         operations:
-          - CREATE
           - UPDATE
         resources:
-          - pods
+          - pods/ephemeralcontainers
   validationActions:
     - Deny
   matchImageReferences:
@@ -35,7 +37,6 @@ spec:
         ctlog:
           insecureIgnoreTlog: true
   validations:
-    - expression: images.containers.all(i, verifyImageSignatures(i, [attestors.cosign]) > 0) &&
-        images.initContainers.all(i, verifyImageSignatures(i, [attestors.cosign]) > 0) &&
+    - expression: 
         images.ephemeralContainers.all(i, verifyImageSignatures(i, [attestors.cosign]) > 0)
       message: Failed the image signature verifications
