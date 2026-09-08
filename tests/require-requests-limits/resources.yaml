@@ -1,7 +1,15 @@
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: petclinic-dev
+  labels:
+    kubernetes.io/metadata.name: petclinic-dev
+---
+apiVersion: v1
 kind: Pod
 metadata:
   name: no-resources
+  namespace: petclinic-dev
 spec:
   containers:
     - name: app
@@ -11,6 +19,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: no-cpu-request
+  namespace: petclinic-dev
 spec:
   containers:
     - name: app
@@ -25,6 +34,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: no-memory-request
+  namespace: petclinic-dev
 spec:
   containers:
     - name: app
@@ -39,6 +49,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: no-memory-limit
+  namespace: petclinic-dev
 spec:
   containers:
     - name: app
@@ -52,6 +63,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: no-memory-limit-init
+  namespace: petclinic-dev
 spec:
   initContainers:
     - name: init
@@ -74,6 +86,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: compliant
+  namespace: petclinic-dev
 spec:
   containers:
     - name: app
