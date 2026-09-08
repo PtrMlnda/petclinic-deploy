@@ -1,0 +1,28 @@
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: require-requests-limits-dev
+spec:
+  matchConstraints:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: petclinic-dev
+    resourceRules:
+      - apiGroups:
+          - ""
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - pods
+  validationActions:
+    - Audit
+  validations:
+    - expression: variables.allContainers.all(c, has(c.resources) && has(c.resources.requests) && has(c.resources.requests.memory)
+        && has(c.resources.requests.cpu) && has(c.resources.limits) && has(c.resources.limits.memory))
+      message: CPU and memory resource requests and memory limits are required for containers.
+  variables:
+    - expression: object.spec.containers + object.spec.?initContainers.orValue([])
+      name: allContainers

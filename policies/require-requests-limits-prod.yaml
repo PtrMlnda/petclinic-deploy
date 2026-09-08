@@ -1,12 +1,12 @@
 apiVersion: policies.kyverno.io/v1
 kind: ValidatingPolicy
 metadata:
-  name: require-requests-limits
+  name: require-requests-limits-prod
 spec:
   matchConstraints:
     namespaceSelector:
       matchLabels:
-        kubernetes.io/metadata.name: petclinic-dev
+        kubernetes.io/metadata.name: petclinic-prod
     resourceRules:
       - apiGroups:
           - ""
