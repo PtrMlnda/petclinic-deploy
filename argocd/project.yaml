@@ -10,6 +10,8 @@ spec:
   destinations:
     - namespace: petclinic-dev
       server: https://kubernetes.default.svc
+    - namespace: petclinic-prod
+      server: https://kubernetes.default.svc
   namespaceResourceWhitelist:
     - group: 'apps'
       kind: Deployment
