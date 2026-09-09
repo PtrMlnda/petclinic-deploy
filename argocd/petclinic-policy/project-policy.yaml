@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: petclinic-policy
+  namespace: argocd
+spec:
+  description: Project for Petclinic policies
+  sourceRepos:
+    - https://github.com/ptrmlnda/petclinic-deploy.git
+  destinations:
+    - namespace: kyverno
+      server: https://kubernetes.default.svc
+  namespaceResourceWhitelist: []
+  clusterResourceWhitelist:
+    - group: policies.kyverno.io
+      kind: ValidatingPolicy
+    - group: policies.kyverno.io
+      kind: ImageValidatingPolicy

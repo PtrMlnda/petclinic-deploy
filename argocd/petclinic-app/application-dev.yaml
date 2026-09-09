@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: petclinic-prod
+  name: petclinic-dev
   namespace: argocd
 spec:
   project: petclinic-app
   source:
-    repoURL: https://github.com/PtrMlnda/petclinic-deploy.git
+    repoURL: https://github.com/ptrmlnda/petclinic-deploy.git
     targetRevision: main
-    path: environments/prod
+    path: environments/dev
   destination:
     server: https://kubernetes.default.svc
-    namespace: petclinic-prod
+    namespace: petclinic-dev
   syncPolicy:
     automated:
       prune: true

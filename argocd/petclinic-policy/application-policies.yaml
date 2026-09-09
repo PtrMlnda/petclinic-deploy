@@ -1,18 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: petclinic-dev
+  name: kyverno-policies
   namespace: argocd
 spec:
-  project: petclinic-app
+  project: petclinic-policy
   source:
-    repoURL: https://github.com/PtrMlnda/petclinic-deploy.git
+    repoURL: https://github.com/ptrmlnda/petclinic-deploy.git
     targetRevision: main
-    path: environments/dev
+    path: policies
   destination:
     server: https://kubernetes.default.svc
-    namespace: petclinic-dev
+    namespace: kyverno
   syncPolicy:
     automated:
-      prune: true
+      prune: false
       selfHeal: true
+    
