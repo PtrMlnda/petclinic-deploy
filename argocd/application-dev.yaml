@@ -4,7 +4,7 @@ metadata:
   name: petclinic-dev
   namespace: argocd
 spec:
-  project: petclinic-project
+  project: petclinic-app
   source:
     repoURL: https://github.com/PtrMlnda/petclinic-deploy.git
     targetRevision: main

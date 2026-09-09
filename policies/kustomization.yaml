@@ -1,0 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - require-requests-limits-dev.yaml
+  - require-requests-limits-prod.yaml
+  - verify-image-signature-eph.yaml
+  - verify-image-signature.yaml
