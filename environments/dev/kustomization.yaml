@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: petclinic-dev
 resources:
   - ../../base
+  - relaxed-policy.yaml
 images:
   - name: ghcr.io/ptrmlnda/petclinic
     digest: sha256:d76cf4442ab9c9c3bf9fe1737f985002d94c48f348c0aade2ea5a26c8ab4cc88
