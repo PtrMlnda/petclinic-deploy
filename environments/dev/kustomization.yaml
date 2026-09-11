@@ -6,3 +6,4 @@ resources:
 images:
   - name: ghcr.io/ptrmlnda/petclinic
     digest: sha256:d5c766397221a9de65783b8794ed24d948df644d81dc3494bdfb1595331c9ca5
+# Trivial change
