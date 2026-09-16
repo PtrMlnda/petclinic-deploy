@@ -147,7 +147,7 @@ Everything runs locally:
 The implementation is done. Things I know aren't perfect:
 
 - **No real review.** It's a one-person repo, so there's nobody to review PRs. The workflow merges dev promotions with `--admin`, and I merge prod ones myself with the admin bypass.
-- **Keyed signing.** Signing uses a private-public key pair in order to keep the whole process automatic (cosign allows for keyless signing but it requires manual input). 
+- **Keyed signing.** For now signing uses a private-public key pair, however there is a possibility to implement keyless mechanism - an actual TODO that will get rid of long-lived secrets. 
 - **The scanned image and the pushed image come from two build steps.** The push step runs `docker/build-push-action` again using the layer cache, instead of pushing the exact image that was scanned.
 - **The signature policies have no tests here.** Only the dev requests/limits policy has Kyverno CLI tests in `tests/` (ImageValidatingPolicy is not supported by Kyvenro test tool).
 - **Cluster setup isn't in the repo.** Argo CD, Kyverno, the namespaces and the `argocd/` manifests are set up by hand (see Environment).
