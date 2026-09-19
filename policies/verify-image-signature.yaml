@@ -26,14 +26,10 @@ spec:
   attestors:
     - name: cosign
       cosign:
-        key:
-          data: |
-            -----BEGIN PUBLIC KEY-----
-            MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEvF3IxE43viR9/XKtEJapXBW+3Kq5
-            PFktQr0wehMB/J/MRgXhSWC1aWWK+dpgtQXKIWkEOLoqjR85mGo/lk4HYA==
-            -----END PUBLIC KEY-----
-        ctlog:
-          insecureIgnoreTlog: true
+        keyless:
+          identities:
+            - subject: 'https://github.com/PtrMlnda/spring-petclinic/.github/workflows/build.yml@refs/heads/main'
+              issuer: 'https://token.actions.githubusercontent.com'
   validations:
     - expression: images.containers.all(i, verifyImageSignatures(i, [attestors.cosign]) > 0) &&
         images.initContainers.all(i, verifyImageSignatures(i, [attestors.cosign]) > 0) &&
