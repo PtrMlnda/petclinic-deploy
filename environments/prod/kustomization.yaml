@@ -5,4 +5,4 @@ resources:
   - ../../base
 images:
   - name: ghcr.io/ptrmlnda/petclinic
-    digest: sha256:7bbcf637548298a822967c3e580879e2cadfdd31142c146517d8167cdd0f086e
+    digest: sha256:8303c982e0e44d640c039fd778e3cf84de4260ed66657246fffb7f6e6088b289
