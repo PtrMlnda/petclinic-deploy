@@ -45,8 +45,8 @@ flowchart TD
     prodpr --> argo
     argo --> adm
     manual -.->|"bypasses the pipeline"| adm
-    adm -->|"signed with pipeline key"| pod
-    adm -->|"unsigned or other key"| reject
+    adm -->|"signed by the pipeline"| pod
+    adm -->|"unsigned or wrong identity"| reject
 ```
 
 ## Pipeline stages
@@ -60,7 +60,7 @@ There are six security layers, and each answers a question the others cannot. Ad
 | 3 | Dependency scanning | Trivy `fs` | `CRITICAL`, fixable only, `exit-code: 1` | Vulnerable dependencies declared in the repository |
 | 4 | Config scanning | Trivy `config` | `HIGH,CRITICAL`, `exit-code: 1` | Misconfigurations in the `Dockerfile` and other config files |
 | 5 | Image scanning | Trivy `image` | `CRITICAL`, fixable only, `exit-code: 1` | Vulnerabilities in the built image: base OS packages and the dependencies packaged into it |
-| 6 | Admission | Kyverno | `Deny` at the API server | Pod images without a valid signature from the pipeline key, however the pod was submitted |
+| 6 | Admission | Kyverno | `Deny` at the API server | Pod images without a valid signature from the pipeline, however the pod was submitted |
 
 Each Trivy gate is followed by a report step that runs even when the gate fails. The JSON reports and a SBOM are uploaded as the `scan-reports` artifact.
 
@@ -79,7 +79,7 @@ The cluster checks two things before a pod is allowed to start.
 
 This is the check the whole project is built around. It doesn't matter if the pod came from Argo CD or someone ran `kubectl apply` by hand, the check is the same.
 
-- `policies/verify-image-signature.yaml` blocks any pod in `petclinic-dev` or `petclinic-prod` if one of its images (normal, init or ephemeral containers) isn't signed with cosign key from the CI pipeline.
+- `policies/verify-image-signature.yaml` blocks any pod in `petclinic-dev` or `petclinic-prod` if one of its images (normal, init or ephemeral containers) isn't signed by the CI pipeline's workflow identity.
 - `policies/verify-image-signature-eph.yaml` does the same for ephemeral containers, so you can't use an unsigned image in with `kubectl debug`.
 
 **2. Does the pod follow basic security/quality standards?**
@@ -133,7 +133,7 @@ Everything runs locally:
 | Secret scanning | Gitleaks | `gitleaks/gitleaks-action` v3.0.0 |
 | Vulnerability and config scanning | Trivy | `aquasecurity/trivy-action` v0.36.0 |
 | SBOM | Syft | `anchore/sbom-action` v0.24.2 |
-| Signing | cosign, key pair | `sigstore/cosign-installer` v4.1.2 |
+| Signing | cosign, keyless (OIDC) | `sigstore/cosign-installer` v4.1.2 |
 | Registry | GitHub Container Registry | `ghcr.io/ptrmlnda/petclinic` |
 | Manifests | Kustomize | `base/` + `environments/{dev,prod}` |
 | GitOps | Argo CD | `argoproj.io/v1alpha1` Application, AppProject |
@@ -147,7 +147,6 @@ Everything runs locally:
 The implementation is done. Things I know aren't perfect:
 
 - **No real review.** It's a one-person repo, so there's nobody to review PRs. The workflow merges dev promotions with `--admin`, and I merge prod ones myself with the admin bypass.
-- **Keyed signing.** For now signing uses a private-public key pair, however there is a possibility to implement keyless mechanism - an actual TODO that will get rid of long-lived secrets. 
 - **The scanned image and the pushed image come from two build steps.** The push step runs `docker/build-push-action` again using the layer cache, instead of pushing the exact image that was scanned.
 - **The signature policies have no tests here.** Only the dev requests/limits policy has Kyverno CLI tests in `tests/` (ImageValidatingPolicy is not supported by Kyvenro test tool).
 - **Cluster setup isn't in the repo.** Argo CD, Kyverno, the namespaces and the `argocd/` manifests are set up by hand (see Environment).
